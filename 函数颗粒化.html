@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>函数科里化</title>
+</head>
+<body>
+<!--知识储备-->
+<!--1，对象中的扩展运算符(...)用于取出参数对象中的所有可遍历属性，拷贝到当前对象之中（es6）-->
+<!--2，递归：函数不断地调用自身，如果完成了返回结果，如果没有终止条件就会一直递归下去-->
+<!--3，函数的tostring方法：利用tostring方法可以将函数隐式转换为字符串-->
+<!--4，数组的reduce方法,实现累加器求和,函数中有两个参数必选参数,第一个是初始值,第二个是当前值-->
+<script>
+
+
+    // 实现一个add方法，使计算结果能够满足如下预期：
+    // add(1); // 1
+    // add(1,2); // 3
+    // add(1,2,3); // 6
+    // add(1)(2); // 3
+    // add(1)(2)(3); // 6;
+    // add(1, 2, 3)(4); // 10;
+    // add(1)(2)(3)(4)(5); // 15;
+
+    // 1,
+    // function add(){
+    //     let sum = 0;
+    //     for (let i = 0;i < arguments.length;i++){
+    //         sum += arguments[i];
+    //     }
+    //     console.log(sum);
+    // }
+    //
+    // add(1); //1
+    // add(1,2); //3
+    // add(1,2,3); //6
+
+    // 2,如果想要在add(1)之后在执行第二个括号(2),那就需要add(1)中返回一个新的函数来接收那个实参2，
+    // 并在新函数中进行累加运算.如果还有多个就以此类推
+    // 1,
+    // function add(a) {
+    //     console.log(a);
+    //     return function (b) {
+    //         // console.log(b);
+    //         console.log(a+b);
+    //     }
+    // }
+    // add(1)(2);
+    // // 2,
+    // function add(a) {
+    //     console.log(a);
+    //     return function (b) {
+    //         console.log(b);
+    //         return function (c) {
+    //             console.log(a + b + c);
+    //         }
+    //     }
+    // }
+    // add(1)(2)(3);
+
+    //add(1,2)(3) ?
+
+
+////////////////////////////////////////////开始//////////////////////////////////////
+
+    // // 函数科里化
+    function add() {
+        // 第一次执行时，定义一个数组专门用来存储第一个括号中所有的参数
+        // 伪数组通过借用数组的slice方法返回一个新的数组对象
+        // const _args = Array.prototype.slice.call(arguments);
+        // 伪数组转化为数组
+        const _args = Array.from(arguments);
+        // console.log(_args);//1
+
+        // 在内部声明一个函数，利用闭包的特性保存_args并收集所有的参数值
+        const _adder = function () {
+            // console.log(...arguments);
+            _args.push(...arguments);//将当前遍历的实参列表进行展开,并把每一项加到已有的数组中
+            // console.log(_args);
+            return _adder; //递归调用该该函数,每一次执行上方代码,把后面括号中的所有参数都接收到数组中
+            // 当所有的参数全部接收完毕,将函数返回
+        };
+
+        // 输出的时候执行,利用toString隐式转换把函数变成字符串后作为返回值传到外部，
+        // 当最后执行时隐式转换，并计算最终的值返回
+        _adder.toString = function () {
+            // console.log(123);
+            return _args.reduce(function (a, b) {
+                // console.log(a,b);
+                return a + b;
+            });
+        }
+
+
+        return _adder;//add只有一个参数的时候执行的代码
+    }
+
+
+    // add(1);
+    // add(1)(2);
+    console.log('' + add(1,2,3));                // 6
+    console.log(''+ add(1)(2)(3));               // 6
+    console.log(''+ add(1, 2, 3)(4));            // 10
+    // console.log('' + add(1)(2)(3)(4)(5))      // 15
+    // add(2, 6)(1)                // 9
+
+    ////////////////////////////////////////////结束//////////////////////////////////////////
+
+</script>
+</body>
+</html>

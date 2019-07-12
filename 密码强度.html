@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
+		span {
+			display: block;
+			width: 50px;
+			height: 14px;
+			background-color: red;
+			float:left;
+			border: 1px dotted #ccc;
+			/*里面会有文字*/
+			line-height: 14px;
+			text-align: center;
+			color: #ccc;
+			font-size: 12px;
+			/*默认状态*/
+			display: none;
+		}
+		/*当等级为弱时,第一个span显示,背景为红色,内容为弱*/
+		div.r span:nth-child(1){
+			background-color: red;
+			display: block;
+		}
+		div.r span:nth-child(1):before {
+			content: '弱';
+		}
+		/*当等级为中时,前两个span显示,背景为橘黄色,内容为中*/
+		div.z span:nth-child(1), div.z span:nth-child(2){
+			background-color: orange;
+			display: block;
+		}
+		div.z span:nth-child(2):before {
+			content: '中';
+		}
+		/*当等级为强时,三个span显示,背景为绿色,内容为强*/
+		div.q span{
+			background-color: green;
+			display: block;
+		}
+		div.q span:nth-child(3):before {
+			content: '强';
+		}
+
+
+	</style>
+</head>
+<body>
+	<input type="password" id='pwd' maxlength="22">
+	<div id='dengji'>
+		<span></span>
+		<span></span>
+		<span></span>
+	</div>
+	<script>
+		// 1 边输入边获取input里面的值,需用oninput事件
+		var pwd = document.querySelector('#pwd');
+		pwd.oninput = function(){
+			// 2 检测输入的内容长度是否大于6
+			// var len = pwd.value.length;
+			var vl = pwd.value;
+			var reg1 = /^\d{6,}$/;
+			var reg2 = /^[a-zA-Z]{6,}$/;
+			var reg3 =/^[^0-9a-zA-Z]{6,}$/;
+			// var isOkOne = reg1.test(vl);
+			var reg4 = /^[0-9a-zA-Z]{6,}$/;
+			var reg5 = /^[0-9a-zA-Z]{6,}$/
+
+			if(pwd.value.length>=6){
+				// 3 如果大于6,开始检测弱中强
+				// 4 如果单一,则为弱,添加类名
+				if(reg1.test(vl) ||reg2.test(vl) ||reg3.test(vl) ){
+					// console.log('easy');
+				} else
+				// 5 如果组合,则为中,添加类名
+				// 6 如果三联合,则为强,添加类名
+			}			
+		}
+		
+	</script>
+</body>
+</html>
